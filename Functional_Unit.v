@@ -278,21 +278,31 @@ module Functional_Unit #(
 //	.ofm_size       (             )  
 //);
 
-DPRAM #(.RAM_SIZE (WGT_RAM_SIZE), .DATA_WIDTH (DATA_WIDTH), .INOUT_WIDTH (INOUT_WIDTH), .SYSTOLIC_SIZE (SYSTOLIC_SIZE)) wgt_dpram (
-	.clk            ( clk         ) ,
-	.write_ofm_size (             ) ,
-
-	.re_a           ( wgt_read_en ) ,
-	.addr_a         ( wgt_addr_a  ) ,
-	.dout_a         ( wgt_data_in ) ,
-
-	.we_b           (             ) ,
-	.addr_b         (             ) ,
-	.din_b          (             ) ,
-
-	.upsample_mode  (             ) ,
-	.ofm_size       (             )
+LUT #(
+    .ADDR_WIDTH ( $clog2(WGT_RAM_SIZE)  ),
+    .DATA_WIDTH (INOUT_WIDTH  )
+) lut_wgt (
+	 .clk     (clk)        ,
+   .address (wgt_addr_a) ,
+   .data_out(wgt_data_in)
 );
+
+
+//DPRAM #(.RAM_SIZE (WGT_RAM_SIZE), .DATA_WIDTH (DATA_WIDTH), .INOUT_WIDTH (INOUT_WIDTH), .SYSTOLIC_SIZE (SYSTOLIC_SIZE)) wgt_dpram (
+//	.clk            ( clk         ) ,
+//	.write_ofm_size (             ) ,
+//
+//	.re_a           ( wgt_read_en ) ,
+//	.addr_a         ( wgt_addr_a  ) ,
+//	.dout_a         ( wgt_data_in ) ,
+//
+//	.we_b           (             ) ,
+//	.addr_b         (             ) ,
+//	.din_b          (             ) ,
+//
+//	.upsample_mode  (             ) ,
+//	.ofm_size       (             )
+//);
 
 //DPRAM #(.RAM_SIZE (OFM_RAM_SIZE_1), .DATA_WIDTH (DATA_WIDTH), .INOUT_WIDTH (INOUT_WIDTH), .SYSTOLIC_SIZE (SYSTOLIC_SIZE)) ofm_dpram_1 (
 //	.clk            ( clk                ) ,
