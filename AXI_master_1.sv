@@ -192,18 +192,6 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 						end
 				endcase
 		end
-    reg detect_d; 
-    reg detect; 
-
-    always @(posedge ACLK or posedge ARESETN) begin
-        if (!ARESETN) begin
-            detect_d <= 0;
-            detect     <= 0;
-        end else begin
-            detect_d <= (c_state_w == WRITE_RESP);
-            detect     <= (c_state_w == WRITE_RESP) & ~(c_state_w == WRITE_RESP);
-        end
-    end
 
 	always @(posedge ACLK or negedge ARESETN) begin
 		if(~ARESETN) begin
