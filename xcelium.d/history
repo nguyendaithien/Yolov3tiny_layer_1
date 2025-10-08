@@ -1,0 +1,23 @@
+//
+// File created by:  xrun
+// Do not modify this file
+
+s1::(07Oct2025:21:55:34):( xrun -access +rwc LUT_rom.sv )&&(./xcelium.d/env.d/env.history.07Oct2025_21_55_34)
+s2::(07Oct2025:21:58:55):( xrun -access +rwc LUT_rom.sv )&&(./xcelium.d/env.d/env.history.07Oct2025_21_58_55)
+s3::(07Oct2025:22:21:15):( xrun -access +rwc output_verilog.sv )&&(./xcelium.d/env.d/env.history.07Oct2025_22_21_15)
+s4::(07Oct2025:22:28:02):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_22_28_02)
+s5::(07Oct2025:23:29:12):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_29_12)
+s6::(07Oct2025:23:29:52):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_29_52)
+s7::(07Oct2025:23:30:15):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_30_15)
+s8::(07Oct2025:23:30:46):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_30_46)
+s9::(07Oct2025:23:31:16):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_31_16)
+s10::(07Oct2025:23:34:09):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_34_09)
+s11::(07Oct2025:23:47:43):( xrun -access +rwc lut.sv )&&(./xcelium.d/env.d/env.history.07Oct2025_23_47_43)
+s12::(07Oct2025:23:48:40):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.07Oct2025_23_48_40)
+s13::(08Oct2025:00:10:05):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_10_05)
+s14::(08Oct2025:00:23:28):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_23_28)
+s15::(08Oct2025:00:27:37):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_27_37)
+s16::(08Oct2025:00:28:07):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_28_07)
+s17::(08Oct2025:00:29:04):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_29_04)
+s18::(08Oct2025:00:29:48):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_00_29_48)
+s19::(08Oct2025:08:11:23):( xrun -access +rwc -sv -linedebug -input run.tcl -f listfile.f )&&(./xcelium.d/env.d/env.history.08Oct2025_08_11_23)

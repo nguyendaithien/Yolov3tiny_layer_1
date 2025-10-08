@@ -420,9 +420,9 @@ initial begin
     $readmemb ("ifm_256_bit.txt", u_slave.mem,0);
 end
 
-initial begin
-    $readmemb ("wgt.txt", top.F_U.wgt_dpram.mem);
-end
+//initial begin
+//    $readmemb ("wgt.txt", top.F_U.wgt_dpram.mem);
+//end
 reg [DATA_WIDTH - 1 : 0] ofm_golden [OFM_SIZE * OFM_SIZE * NUM_FILTER - 1 : 0];
 
 initial begin
