@@ -75,9 +75,7 @@ module AXI_MASTER_IF #(
 	localparam NUM_TRANS = 338;
   reg [LEN_WIDTH-1:0] beat_cnt_r;
   reg [LEN_WIDTH-1:0] beat_cnt_w;
-	localparam FIFO_SIZE = 1536;
-  reg [$clog2(FIFO_SIZE) - 1 : 0] fifo_cnt_ifm,cnt_next_ifm                  ;
-  reg [$clog2(FIFO_SIZE) - 1 : 0] fifo_cnt_ofm,cnt_next_ofm                  ;
+	localparam FIFO_SIZE = 512;
 
 
 	reg read_fifo;
@@ -109,6 +107,31 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 	wire end_layer_1;
 	localparam IFM_TILING = 10816 * 27; 
 	localparam BASE_ADDR_OFM = 10816 * 27 + 1;
+
+/// FIFO state////////////
+
+	reg [10:0] cnt_fifo_ifm, cnt_next_ifm, cnt_fifo_ofm, cnt_next_ofm;
+	wire full_ifm, empty_ifm, full_ofm, empty_ofm;
+  assign full_ifm  = (cnt_fifo_ifm == FIFO_SIZE);
+  assign empty_ifm = (cnt_fifo_ifm == 0);
+  assign full_ofm  = (cnt_fifo_ofm == FIFO_SIZE);
+  assign empty_ofm = (cnt_fifo_ofm == 0);
+  assign cnt_next_ifm = cnt_fifo_ifm + (M_AXI_RVALID && !full_ifm) - (read_fifo_ifm && !empty_ifm);
+  assign cnt_next_ofm = cnt_fifo_ofm + (write && !full_ofm) - (read_fifo && !empty_ofm);
+  always_ff @(posedge ACLK or negedge ARESETN) begin
+    if (!ARESETN) begin
+      cnt_fifo_ifm <= 0;
+    end else begin
+      cnt_fifo_ifm <= cnt_next_ifm;
+    end
+  end
+  always_ff @(posedge ACLK or negedge ARESETN) begin
+    if (!ARESETN) begin
+      cnt_fifo_ofm <= 0;
+    end else begin
+      cnt_fifo_ofm <= cnt_next_ofm;
+    end
+  end
 
 	reg [ADDR_WIDTH-1:0] m_axi_araddr_4; 
 	assign addr_ofm = m_axi_araddr_4 ;
@@ -161,7 +184,7 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
         case (c_state_w)
             IDLE_WRITE: begin
             	BUSY_W = 0;
-              if ((fifo_ofm.cnt >= 256) && (cnt_trans < NUM_TRANS)) next_state_w = READ_FIFO;
+              if ((cnt_fifo_ofm >= 256) && (cnt_trans < NUM_TRANS)) next_state_w = READ_FIFO;
 							else if(cnt_trans == NUM_TRANS) next_state_w = DONE_LAYER; 
             end
 					READ_FIFO: begin
@@ -236,6 +259,7 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
         end
     end
 
+
     always @(*) begin
         // defaults
 //        next_state_r    = c_state_r ;
@@ -250,7 +274,7 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
         case (c_state_r)
             IDLE_READ: begin
                 BUSY_R = 0;
-                  if (fifo_ifm.cnt < (FIFO_SIZE - BURST_LEN_R)) next_state_r = READ_ADDR;
+                  if (cnt_fifo_ifm <= (FIFO_SIZE - BURST_LEN_R)) next_state_r = READ_ADDR;
 									else next_state_r = IDLE_READ;
             end
             READ_ADDR: begin
@@ -282,8 +306,8 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 
 	always @(posedge ACLK or negedge ARESETN) begin
 		if(!ARESETN) begin
-			m_axi_araddr_1 <= 0; 
-			M_AXI_ARADDR <= 0;
+			m_axi_araddr_1 <= 32'b0; 
+			M_AXI_ARADDR <= 32'b0;
 		end else begin
 			M_AXI_ARADDR <= m_axi_araddr_1; 
 		end
@@ -291,62 +315,38 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 
 	always @(posedge ACLK or negedge ARESETN) begin
 		if(~ARESETN) begin
-			m_axi_araddr_1 <= 0;
+			m_axi_araddr_1 <= 32'b0;
 		end else begin
 			m_axi_araddr_1 <= (c_state_r == UPDATE_ADDR) ? m_axi_araddr_1 + BURST_LEN_R+1 : m_axi_araddr_1;
 		end
 	end
 
-	wire full,full_ifm;
-	wire empty,empty_ifm;
 
  FIFO_OFM #(
-	.DATA_WIDTH (256   ), 
+	.DATA_WIDTH (AXI_WIDTH   ), 
 	.FIFO_SIZE  (FIFO_SIZE )
 ) fifo_ifm (
 	.clk          (ACLK          ) ,
-	.rst_n        (ARESETN       ) ,
 	.rd_en        (read_fifo_ifm ) ,
+	.rd_clr       (ARESETN       ) ,
+	.wr_clr       (ARESETN       ) ,
 	.wr_en        (M_AXI_RVALID  ) ,
 	.data_in_fifo (M_AXI_RDATA   ) ,
-	.data_out_fifo(data_fifo_o   ) ,
-	.empty        (empty_ifm         ) ,
-	.full         (full_ifm          )
+	.data_out_fifo(data_fifo_o   ) 
 );
-
-
-//  assign cnt_next_ifm = fifo_cnt_ifm + (M_AXI_RVALID && !fifo_ifm.full) - (read_fifo_ifm && !fifo_ifm.empty);
-//  always_ff @(posedge ACLK or negedge ARESETN) begin
-//    if (!ARESETN) begin
-//      fifo_cnt_ifm <= 0;
-//    end else begin
-//      fifo_cnt_ifm <= cnt_next_ifm;
-//    end
-//  end
-//  assign cnt_next_ofm = fifo_cnt_ofm + (write && !fifo_ofm.full) - (read_fifo && !fifo_ofm.empty);
-//  always_ff @(posedge ACLK or negedge ARESETN) begin
-//    if (!ARESETN) begin
-//      fifo_cnt_ofm <= 0;
-//    end else begin
-//      fifo_cnt_ofm <= cnt_next_ofm;
-//    end
-//  end
-
-
 
 
  FIFO_OFM #(
 	.DATA_WIDTH (AXI_WIDTH  ), 
-	.FIFO_SIZE  (2000 )
+	.FIFO_SIZE  (FIFO_SIZE )
 ) fifo_ofm (
 	.clk          (ACLK          ) ,
-	.rst_n        (ARESETN       ) ,
 	.rd_en        (read_fifo     ) ,
+	.rd_clr       (ARESETN       ) ,
+	.wr_clr       (ARESETN       ) ,
 	.wr_en        (write         ) ,
 	.data_in_fifo (WDATA_IN      ) ,
-	.data_out_fifo(data_o_fifo   ) ,
-	.empty        (empty         ) ,
-	.full         (full          )
+	.data_out_fifo(data_o_fifo   ) 
 );
 
 endmodule
