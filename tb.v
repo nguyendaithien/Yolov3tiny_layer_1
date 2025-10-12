@@ -250,7 +250,7 @@ always #5 ACLK = !ACLK ;
 parameter CHANNELS = 16;
 
 
-  reg [15:0] mem_out [OFM_SIZE*OFM_SIZE*NUM_FILTER-1];
+  reg [15:0] mem_out [OFM_SIZE*OFM_SIZE*NUM_FILTER-1:0];
   integer c, i, j, k;
   integer idx;
 
@@ -417,7 +417,7 @@ initial begin
 end
 
 initial begin
-    $readmemb ("ifm_256_bit.txt", u_slave.mem,0);
+    $readmemb ("/home/luu_k64/FIFO_to_BRAM/FIFO_to_BRAM.ip_user_files/mem_init_files/ifm_256_bit.txt", u_slave.mem,0);
 end
 
 //initial begin
