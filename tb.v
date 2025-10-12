@@ -326,11 +326,26 @@ parameter CHANNELS = 16;
 // 		$display ("OFM: %h ", top.u_master.data_o_fifo);
 //	end
 //end
+	
 always @(posedge ACLK) begin
 	if(M_AXI_WREADY) begin
  		$display ("OFM: %h", M_AXI_WDATA);
 	end
 end
+//	reg read_fifo_ifm_reg;
+//	always @(posedge ACLK or negedge ARESETN) begin
+//		if(~ARESETN) begin
+//			read_fifo_ifm_reg <= 0;
+//		end else begin
+//		read_fifo_ifm_reg <= top.u_master.read_fifo_ifm;
+//		end
+//	end
+//
+//always @(posedge ACLK) begin
+//	if(read_fifo_ifm_reg) begin
+// 		$display ("IFM from FIFO: %h", top.u_master.data_fifo_o);
+//	end
+//end
 
 reg [31:0] index;
 initial begin

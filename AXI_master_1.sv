@@ -158,10 +158,7 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
       addr = addr_o_fifo   ;
 		end
 	end
-	reg M_AXI_WREADY_reg ;
-	always @(posedge ACLK) begin
-		M_AXI_WREADY_reg <= M_AXI_WREADY;
-	end
+
 
     always @(*) begin
         next_state_w    = c_state_w              ;
@@ -262,7 +259,7 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 
     always @(*) begin
         // defaults
-//        next_state_r    = c_state_r ;
+        next_state_r    = c_state_r ;
         BUSY_R          = 1'b1      ;
         M_AXI_ARVALID   = 0         ; 
         M_AXI_RREADY    = 0         ;
@@ -301,12 +298,12 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 					END_READ: begin
 						next_state_r = IDLE_READ;
 					end
+					default: next_state_r = IDLE_READ;
         endcase
     end
 
 	always @(posedge ACLK or negedge ARESETN) begin
 		if(!ARESETN) begin
-			m_axi_araddr_1 <= 32'b0; 
 			M_AXI_ARADDR <= 32'b0;
 		end else begin
 			M_AXI_ARADDR <= m_axi_araddr_1; 
