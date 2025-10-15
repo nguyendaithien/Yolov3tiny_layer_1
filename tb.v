@@ -187,7 +187,7 @@ localparam NUM_FILTER = 16 ;
    .M_AXI_RVALID  (M_AXI_RVALID  ),
    .M_AXI_RREADY  (M_AXI_RREADY  ),
    .start_read    (start_read    ),
-   .done          (done          )
+   .done_wr_layer          (done          )
 	);
 	
   // ================= Slave =================
@@ -327,11 +327,11 @@ parameter CHANNELS = 16;
 //	end
 //end
 	
-always @(posedge ACLK) begin
-	if(M_AXI_WREADY) begin
- 		$display ("OFM: %h", M_AXI_WDATA);
-	end
-end
+//always @(posedge ACLK) begin
+//	if(M_AXI_WREADY) begin
+// 		$display ("OFM: %h", M_AXI_WDATA);
+//	end
+//end
 //	reg read_fifo_ifm_reg;
 //	always @(posedge ACLK or negedge ARESETN) begin
 //		if(~ARESETN) begin
@@ -431,9 +431,9 @@ initial begin
 	#10 wr_en_test = 0; 
 end
 
-initial begin
-    $readmemb ("/home/luu_k64/FIFO_to_BRAM/FIFO_to_BRAM.ip_user_files/mem_init_files/ifm_256_bit.txt", u_slave.mem,0);
-end
+//initial begin
+//    $readmemb ("/home/luu_k64/FIFO_to_BRAM/FIFO_to_BRAM.ip_user_files/mem_init_files/ifm_256_bit.txt", u_slave.mem,0);
+//end
 
 //initial begin
 //    $readmemb ("wgt.txt", top.F_U.wgt_dpram.mem);
@@ -494,9 +494,9 @@ endtask
 //	end
 //end
 
-//initial begin
-//	$monitor ("At time : %d - ofm_size = %d - count_layer = %d - counter filter = %d (max = %d) - counter tiling = %d (max = %d)", $time, top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.F_U.ofm_size_conv,top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.count_layer,top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.F_U.control.count_filter, top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.F_U.control.num_load_filter, top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.F_U.control.count_tiling, top.wrapper_ip.SYSTOLIC_ARRAY_v1_0_M00_AXI_inst.F_U.control.num_tiling);
-//end
+initial begin
+	$monitor ("At time : %d - ofm_size = %d - count_layer = %d - counter filter = %d (max = %d) - counter tiling = %d (max = %d)", $time, top.F_U.ofm_size_conv,top.count_layer,top.F_U.control.count_filter, top.F_U.control.num_load_filter, top.F_U.control.count_tiling, top.F_U.control.num_tiling);
+end
 
 endmodule
 

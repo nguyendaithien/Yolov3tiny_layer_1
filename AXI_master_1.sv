@@ -67,7 +67,7 @@ module AXI_MASTER_IF #(
 		input [8:0] ofm_size,
 	  input write,
   	input [10:0] num_filter,
-	  output reg done,
+	  output wire done_layer,
   	output reg start_CNN,
     output wire [AXI_WIDTH - 1:0] data_fifo_o
 
@@ -75,7 +75,8 @@ module AXI_MASTER_IF #(
 	localparam NUM_TRANS = 338;
   reg [LEN_WIDTH-1:0] beat_cnt_r;
   reg [LEN_WIDTH-1:0] beat_cnt_w;
-	localparam FIFO_SIZE = 512;
+	localparam FIFO_SIZE = 768;
+	reg done;
 
 
 	reg read_fifo;
@@ -317,6 +318,19 @@ wire [AXI_WIDTH - 1:0] data_o_fifo;
 			m_axi_araddr_1 <= (c_state_r == UPDATE_ADDR) ? m_axi_araddr_1 + BURST_LEN_R+1 : m_axi_araddr_1;
 		end
 	end
+
+	reg done_write, done_write_dly;
+	always @(posedge ACLK or negedge ARESETN) begin
+		if(~ARESETN) begin
+			done_write <= 0;
+			done_write_dly <= 0;
+		end else begin
+			done_write <= (cnt_trans == NUM_TRANS) ? 1 : done_layer;
+			done_write_dly <= done_write;
+		end
+	end
+	assign done_layer = done_write & ~(done_write_dly);
+
 
 
  FIFO_OFM #(

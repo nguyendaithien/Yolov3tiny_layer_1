@@ -82,7 +82,7 @@
 		input wire  M_AXI_RVALID                                    ,
 		output wire  M_AXI_RREADY                                   ,
 		input wire start_read                                       ,
-    output wire                   done         
+    output wire                   done_wr_layer         
 	);
      wire                   start       ;
      wire                   ifm_read_en ;
@@ -102,7 +102,6 @@
 	
 
     wire [INOUT_WIDTH-1:0] data_in ;
-	  wire done_wr_layer;
     wire [3 : 0] count_layer        ;
     wire [8 : 0] ofm_size_conv      ;
     wire [8 : 0] ofm_size_ofm_ram_2 ;
@@ -193,7 +192,7 @@
     .write                (ofm_write_en ) ,
 		.read_fifo_ifm        (ifm_read_en  ) ,
     .data_fifo_o          (data_in      ) , 
-		.done                 (done_wr_layer)
+		.done_layer           (done_wr_layer)
   );
 
 Functional_Unit #(
